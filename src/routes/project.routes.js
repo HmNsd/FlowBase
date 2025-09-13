@@ -1,4 +1,4 @@
-import { Router } from "express";
+import express from "express";
 import {
   addMembersToProject,
   createProject,
@@ -21,7 +21,7 @@ import {
 } from "../middlewares/auth.middleware.js";
 import { AvailableUserRole, UserRolesEnum } from "../utils/constants.js";
 
-const router = Router();
+const router = express.Router();
 router.use(verifyJWT);
 
 router
