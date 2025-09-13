@@ -1,5 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import brcypt from "bcrypt";
+
+//npm i jsonwebtoken
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 
@@ -62,7 +64,7 @@ const userSchema = new Schema(
     timestamps: true,
   },
 );
-
+//pre hook for password hashing using bcrypt library with 10 rounds hashing
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -70,12 +72,15 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+//password validation method
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await brcypt.compare(password, this.password);
 };
 
+//generateAccessToken method using jwt library: stateless : sign-with data
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
+    //payload
     {
       _id: this._id,
       email: this.email,
@@ -96,6 +101,7 @@ userSchema.methods.generateRefreshToken = function () {
   );
 };
 
+//generateTemporaryToken method to generate short-lived token unHashed
 userSchema.methods.generateTemporaryToken = function () {
   const unHashedToken = crypto.randomBytes(20).toString("hex");
 
@@ -104,7 +110,8 @@ userSchema.methods.generateTemporaryToken = function () {
     .update(unHashedToken)
     .digest("hex");
 
-  const tokenExpiry = Date.now() + 20 * 60 * 1000; //20 mins
+    //defining tokenExpiry 20 mins
+  const tokenExpiry = Date.now() + 20 * 60 * 1000; 
   return { unHashedToken, hashedToken, tokenExpiry };
 };
 

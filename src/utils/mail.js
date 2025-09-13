@@ -1,12 +1,14 @@
+// npm i mailgen: to genereate mail template for verifying user, npm i nodemailer by mailtrap
 import Mailgen from "mailgen";
 import nodemailer from "nodemailer";
 
+// For Prod use "AWS SES || Brevo", here we doing for QA - test mail using "mailtrap"
 const sendEmail = async (options) => {
   const mailGenerator = new Mailgen({
     theme: "default",
     product: {
-      name: "Task Manager",
-      link: "https://taskmanagelink.com",
+      name: "Flow Base",
+      link: "https://flowbaselink.com",
     },
   });
 
@@ -24,7 +26,7 @@ const sendEmail = async (options) => {
   });
 
   const mail = {
-    from: "mail.taskmanager@example.com",
+    from: "mail.flowbase@test.com",
     to: options.email,
     subject: options.subject,
     text: emailTextual,
@@ -35,23 +37,24 @@ const sendEmail = async (options) => {
     await transporter.sendMail(mail);
   } catch (error) {
     console.error(
-      "Email service failed siliently. Make sure that you have provided your MAILTRAP credentials in the .env file",
+      "Email service failed siliently. Make sure that you have provided your MAILTRAP credentials in the .env",
     );
     console.error("Error: ", error);
   }
 };
 
+//Mail template for Verify user mail
 const emailVerificationMailgenContent = (username, verficationUrl) => {
   return {
     body: {
       name: username,
-      intro: "Welcome to our App! we'are excited to have you on board.",
+      intro: "Welcome to FlowBase! we'are excited to have you on board.",
       action: {
         instructions:
           "To verify your email please click on the following button",
         button: {
           color: "#22BC66",
-          text: "Verify your email",
+          text: "Verify",
           link: verficationUrl,
         },
       },
@@ -61,6 +64,7 @@ const emailVerificationMailgenContent = (username, verficationUrl) => {
   };
 };
 
+//Mail template for Password reset mail
 const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
   return {
     body: {
@@ -70,7 +74,7 @@ const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
         instructions:
           "To reset your password click on the following button or link",
         button: {
-          color: "#22BC66",
+          color: "#0c92f9ff",
           text: "Reset password",
           link: passwordResetUrl,
         },

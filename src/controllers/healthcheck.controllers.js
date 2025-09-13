@@ -9,6 +9,7 @@ const healthCheck = async (req, res, next) => {
       .status(200)
       .json(new ApiResponse(200, { message: "Server is running" }));
   } catch (error) {
+   //express built-in error handler
     next(err)
   }
 };

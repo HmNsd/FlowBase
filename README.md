@@ -178,3 +178,14 @@ FlowBase is a RESTful API service designed to support collaborative project mana
 - File attachment capability for enhanced collaboration
 - Email notification system for user verification and password reset
 - Comprehensive API documentation through endpoint structure
+
+
+### 8. Register User
+
+<!-- auth.controllers.js -->
+- take some user data
+- validate the user data
+- check in DB if user is already exists or not
+- SAVED the new user (Access Token, Refresh Token, General Token, sendmail)
+- Send User verification => email
+- send response back to the request

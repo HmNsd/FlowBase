@@ -9,13 +9,18 @@ import {
 } from "../utils/mail.js";
 import jwt from "jsonwebtoken";
 
+//To generate refresh and access token for new user
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
+
+    // DB call to find user by id
     const user = await User.findById(userId);
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
+
+    //DB Call to save new refresh token for user
     await user.save({ validateBeforeSave: false });
     return { accessToken, refreshToken };
   } catch (error) {
@@ -26,17 +31,21 @@ const generateAccessAndRefreshTokens = async (userId) => {
   }
 };
 
+//capture data from FrontEnd body
 const registerUser = asyncHandler(async (req, res) => {
   const { email, username, password, role } = req.body;
 
+  //DB call to existing user
   const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
 
+  //if matched user found send error
   if (existedUser) {
-    throw new ApiError(409, "User with email or username already exists", []);
+    throw new ApiError(409, "User with email/username already exists", []);
   }
 
+//else if user match not found will create new user
   const user = await User.create({
     email,
     password,
@@ -44,14 +53,16 @@ const registerUser = asyncHandler(async (req, res) => {
     isEmailVerified: false,
   });
 
+  //generating temp token
   const { unHashedToken, hashedToken, tokenExpiry } =
     user.generateTemporaryToken();
 
   user.emailVerificationToken = hashedToken;
   user.emailVerificationExpiry = tokenExpiry;
-
+//DB call to save "hashedToken" & "tokenExpiry" for new user
   await user.save({ validateBeforeSave: false });
 
+  // send mail to user for access token
   await sendEmail({
     email: user?.email,
     subject: "Please verify your email",
@@ -66,7 +77,7 @@ const registerUser = asyncHandler(async (req, res) => {
   );
 
   if (!createdUser) {
-    throw new ApiError(500, "Something went wrong while registering a user");
+    throw new ApiError(500, "Something went wrong while registering user");
   }
 
   return res
