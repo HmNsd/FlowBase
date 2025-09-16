@@ -91,6 +91,7 @@ const registerUser = asyncHandler(async (req, res) => {
     );
 });
 
+//to login capture data from FrontEnd body and verify db
 const login = asyncHandler(async (req, res) => {
   const { email, password, username } = req.body;
 
@@ -139,7 +140,7 @@ const login = asyncHandler(async (req, res) => {
       ),
     );
 });
-
+//to logout capture data from FrontEnd body, find user ById And Update
 const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,

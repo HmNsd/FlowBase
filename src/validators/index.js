@@ -1,5 +1,7 @@
 import { body } from "express-validator";
 import { AvailableUserRole } from "../utils/constants.js";
+
+//validate register user: email, username, password and fullname.
 const userRegisterValidator = () => {
   return [
     body("email")
