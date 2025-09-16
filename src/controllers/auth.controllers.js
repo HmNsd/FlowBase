@@ -171,6 +171,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 });
 
 const verifyEmail = asyncHandler(async (req, res) => {
+  //getting from url as params
   const { verificationToken } = req.params;
 
   if (!verificationToken) {

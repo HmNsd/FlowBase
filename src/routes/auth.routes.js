@@ -23,7 +23,7 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-// unsecured route
+// unsecured route / not requires verify JWT instead work directly
 router.route("/register").post(userRegisterValidator(), validate, registerUser);
 router.route("/login").post(userLoginValidator(), validate, login);
 router.route("/verify-email/:verificationToken").get(verifyEmail);
@@ -35,7 +35,7 @@ router
   .route("/reset-password/:resetToken")
   .post(userResetForgotPasswordValidator(), validate, resetForgotPassword);
 
-//secure routes
+//secure routes / requires verify JWT
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/current-user").post(verifyJWT, getCurrentUser);
 router
